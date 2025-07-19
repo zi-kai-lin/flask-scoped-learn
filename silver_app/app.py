@@ -24,8 +24,13 @@ def create_app(config_object = DevConfig):
 def register_extensions(app):
 
     db.init_app(app)
-    migrate.init_app(app)
+    migrate.init_app(app, db)
 
 
 def register_blueprints(app):
+
+    from silver_app import user
+    from silver_app import task
+
+
     app.register_blueprint(default.views.blueprint)
