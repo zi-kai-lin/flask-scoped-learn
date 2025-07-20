@@ -2,9 +2,12 @@
 
 
 from flask import Flask
+from flask import g
 from silver_app import default
 from silver_app.extensions import db, migrate
 from silver_app.settings import DevConfig
+from silver_app.utils.request_helper import generate_request_id
+
 
 def create_app(config_object = DevConfig):
 
@@ -13,6 +16,7 @@ def create_app(config_object = DevConfig):
     """ Flask ignores trailing flashes """
     app.url_map.strict_slashes = False 
     app.config.from_object(config_object)
+    register_request_handlers(app)
     register_extensions(app)
     register_blueprints(app)
 
@@ -34,3 +38,10 @@ def register_blueprints(app):
 
 
     app.register_blueprint(default.views.blueprint)
+
+
+def register_request_handlers(app):
+
+    @app.before_request
+    def set_request_id():
+        g.request_id = generate_request_id()
