@@ -51,6 +51,8 @@ ERROR_CODE_MAP = {
     }
 }
 
+
+""" Use to handle http status code exceptions """
 HTTP_ERROR_MAP = {
     BAD_REQUEST: {
         "error_code": VALIDATION_ERROR,
@@ -78,7 +80,7 @@ HTTP_ERROR_MAP = {
     }
 }
 
-
+""" use for rasising proper exceptions """
 class SilverAppException(Exception):
     """
     Base exception class for Silver App.
@@ -129,7 +131,6 @@ class SilverAppException(Exception):
             error_detail["debug_message"] = self.debug_message
             
         return error_detail
-
 
 # Convenience exception classes for common scenarios
 class ValidationException(SilverAppException):

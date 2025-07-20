@@ -4,7 +4,8 @@
 from flask import Flask
 from flask import g
 from silver_app import default
-from silver_app.extensions import db, migrate
+from silver_app import user
+from silver_app.extensions import db, migrate, jwt
 from silver_app.settings import DevConfig
 from silver_app.utils.request_helper import generate_request_id
 from werkzeug.exceptions import HTTPException
@@ -19,6 +20,7 @@ def create_app(config_object = DevConfig):
     app.url_map.strict_slashes = False 
     app.config.from_object(config_object)
     register_request_handlers(app)
+    register_error_handlers(app)
     register_extensions(app)
     register_blueprints(app)
 
@@ -31,14 +33,13 @@ def register_extensions(app):
 
     db.init_app(app)
     migrate.init_app(app, db)
+    jwt.init_app(app)
 
 
 def register_blueprints(app):
 
-    from silver_app import user
     from silver_app import task
-
-
+    app.register_blueprint(user.views.blueprint)
     app.register_blueprint(default.views.blueprint)
 
 

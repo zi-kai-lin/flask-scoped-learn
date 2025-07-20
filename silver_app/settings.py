@@ -1,6 +1,6 @@
 import os
 
-
+""" Should use dotenv configuration etc to load in the secret key and other security critical environment variables """
 
 
 

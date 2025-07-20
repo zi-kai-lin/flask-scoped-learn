@@ -3,9 +3,9 @@
 from flask import g, request, jsonify
 import datetime as dt
 import functools
+from flask_jwt_extended import set_access_cookies
 
-
-def success_response(data, message="", status_code= 200, metadata = None):
+def success_response(data, message="", status_code= 200, metadata = None, cookies = None):
     """
     Generate a standardized success response.
     
@@ -49,7 +49,14 @@ def success_response(data, message="", status_code= 200, metadata = None):
         "status_code": status_code
     }
     
-    return jsonify(response_dict), status_code
+    response = jsonify(response_dict)
+    response.status_code = status_code
+
+    if cookies and "access_token" in cookies:
+        set_access_cookies(response, cookies["access_token"])
+
+
+    return response
 
 
 
@@ -92,12 +99,15 @@ def success_response_decorator(message="", status_code=200):
             if len(result) == 1:
                 data = result[0]
                 metadata = {}
+                cookies=None
             elif len(result) == 2:
-                data, metadata = result
+                data, metadata = result, cookies=None
+            elif len(result) == 3:
+                data, metadata, cookies = result
             else:
-                raise ValueError(f"View function '{func.__name__}' must return a tuple of length 1 or 2, got length {len(result)}")
+                raise ValueError(f"View function '{func.__name__}' must return a tuple of length 1, 2, or 3, got length {len(result)}")
             
-            return success_response(data, message, status_code, metadata)
+            return success_response(data, message, status_code, metadata, cookies)
         
         return wrapper
     return decorator
@@ -190,6 +200,8 @@ def handle_http_exception(error):
     Returns:
         Standardized error response
     """
+
+    print("http error")
     from silver_app.utils.errors import (
         SilverAppException, HTTP_ERROR_MAP, SERVER_ERROR
     )

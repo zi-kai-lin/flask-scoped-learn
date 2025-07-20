@@ -3,6 +3,7 @@ from silver_app.app import create_app
 
 
 app = create_app()
+app.config["DEBUG"] = True
 
 
 
