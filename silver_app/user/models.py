@@ -38,3 +38,5 @@ class User(SurrogatePK, Model):
 
     def __repr__(self):
         return '<User({username!r})>'.format(username=self.username)
+    
+

@@ -20,7 +20,8 @@ def create_app(config_object = DevConfig):
     app.url_map.strict_slashes = False 
     app.config.from_object(config_object)
     register_request_handlers(app)
-    register_error_handlers(app)
+    """ Should know the error line, easier to debug """
+#    register_error_handlers(app)
     register_extensions(app)
     register_blueprints(app)
 

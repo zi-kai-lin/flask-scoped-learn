@@ -101,7 +101,10 @@ def success_response_decorator(message="", status_code=200):
                 metadata = {}
                 cookies=None
             elif len(result) == 2:
-                data, metadata = result, cookies=None
+                data = result[0],
+    
+                metadata = result[1],
+                cookies=None
             elif len(result) == 3:
                 data, metadata, cookies = result
             else:

@@ -1,7 +1,7 @@
 """ User related views """
 from flask import Blueprint, request, jsonify
 from flask_apispec import use_kwargs, marshal_with
-from flask_jwt_extended import jwt_required, create_access_token, current_user, set_access_cookies, unset_jwt_cookies
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy.exc import IntegrityError
 from silver_app.utils.errors import ConflictException
 from silver_app.utils.responses import success_response_decorator
@@ -28,3 +28,38 @@ def user_register(username, password, email, **kwargs):
     cookies = AuthService.create_auth_cookies(access_token)
 
     return (user_data, {}, cookies)
+
+
+
+@blueprint.route('/api/user/login', methods=['POST'])
+@use_kwargs(user_schema)
+@success_response_decorator("Login successful", status_code=200)
+def login_user(username, password, **kwargs):
+
+    user, access_token = AuthService.login_user(username, password, **kwargs)
+
+    user_data = user_schema.dump(user)
+
+    cookies = AuthService.create_auth_cookies(access_token)
+
+    return (user_data, {}, cookies)
+
+
+@blueprint.route('/api/user', methods=['GET'])
+@jwt_required()
+@success_response_decorator("User retrieval success", status_code=200)
+def get_user():
+
+
+    user_id = get_jwt_identity()
+
+    user = User.get_by_id(user_id)
+    
+    user_data = user_schema.dump(user)
+
+    print(user_data, {})
+    return (user_data, {})
+
+"""     user = current_user
+    user.token = request.headers.environ['HTTP_AUTHORIZATION'].split('Token ')[1]
+    return current_user """

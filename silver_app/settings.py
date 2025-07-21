@@ -18,6 +18,12 @@ class Config():
     CACHE_TYPE = "simple"
 
 
+    JWT_TOKEN_LOCATION = ['cookies']
+    JWT_ACCESS_COOKIE_NAME = 'access_token_cookie'
+    JWT_COOKIE_CSRF_PROTECT = True
+
+
+
 
 class DevConfig(Config):
 
